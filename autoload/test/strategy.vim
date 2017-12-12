@@ -130,9 +130,9 @@ function! s:pretty_command(cmd) abort
   let separator = !s:Windows() ? '; ' : ' & '
 
   if !get(g:, 'test#preserve_screen')
-    return join([l:clear, l:cd, l:echo, a:cmd], l:separator)
+    return join([l:clear, a:cmd], l:separator)
   else
-    return join([l:cd, l:echo, a:cmd], l:separator)
+    return join([a:cmd], l:separator)
   endif
 endfunction
 

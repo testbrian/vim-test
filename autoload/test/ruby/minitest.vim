@@ -10,7 +10,7 @@ function! test#ruby#minitest#build_position(type, position) abort
   if a:type ==# 'nearest'
     let name = s:nearest_test(a:position)
     if !empty(name)
-      return [a:position['file'], '--name', '/'.name.'/']
+      return [a:position['file'].':'.a:position['line']]
     else
       return [a:position['file']]
     endif
@@ -42,7 +42,7 @@ function! test#ruby#minitest#build_args(args) abort
     endif
   endfor
 
-  let kind = matchstr(test#base#executable('ruby#minitest'), 'ruby\|rake')
+  let kind = matchstr(test#base#executable('ruby#minitest'), 'ruby\|rake\|testrbl')
   return s:build_{kind}_args(get(l:, 'path'), a:args)
 endfunction
 
@@ -57,6 +57,14 @@ endfunction
 function! s:build_ruby_args(path, args) abort
   if a:path =~# '*'
     return ['-e '.shellescape('Dir["./'.a:path.'"].each &method(:require)')] + a:args
+  else
+    return [a:path] + a:args
+  endif
+endfunction
+
+function! s:build_testrbl_args(path, args) abort
+  if a:path =~# '*'
+    return a:args
   else
     return [a:path] + a:args
   endif
